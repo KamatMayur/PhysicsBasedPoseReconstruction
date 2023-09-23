@@ -166,7 +166,7 @@
             <geom mesh="Chest" class="collision"/>
 
             <body>
-              <joint name="neck_z" axis="0 0 1" pos="0 0 0.56" class="neck" />
+              <joint name="neckjnt" axis="0 0 1" pos="0 0 0.56" class="neck" />
             
               <geom mesh="Head" material="M_Head" class="visual"/>
               <geom mesh="Head" class="collision"/>
@@ -214,6 +214,37 @@
           </body>
         </body>
       </body>
-
   </worldbody>
+  
+  <actuator>
+    <motor name="hip_y_right"        gear="80"  joint="hip_y_right"/>
+    <motor name="hip_x_right"        gear="80"  joint="hip_x_right"/>
+    <motor name="hip_z_right"        gear="80"  joint="hip_z_right"/>
+    <motor name="knee_right"         gear="80"  joint="knee_right"/>
+    <motor name="ankle_x_right"      gear="80"  joint="ankle_x_right"/>
+    <motor name="ankle_z_right"      gear="80" joint="ankle_z_right"/>
+    <motor name="hip_y_left"         gear="80"  joint="hip_y_left"/>
+    <motor name="hip_x_left"         gear="80"  joint="hip_x_left"/>
+    <motor name="hip_z_left"         gear="80" joint="hip_z_left"/>
+    <motor name="knee_left"          gear="80"  joint="knee_left"/>
+    <motor name="ankle_x_left"       gear="80"  joint="ankle_x_left"/>
+    <motor name="ankle_z_left"       gear="80"  joint="ankle_z_left"/>
+    <motor name="spine_1_x"          gear="80"  joint="spine_1_x"/>
+    <motor name="spine_1_y"          gear="80"  joint="spine_1_y"/>
+    <motor name="spine_1_z"          gear="80"  joint="spine_1_z"/>
+    <motor name="spine_2_x"          gear="80"  joint="spine_2_x"/>
+    <motor name="spine_2_y"          gear="80"  joint="spine_2_y"/>
+    <motor name="spine_2_z"          gear="80"  joint="spine_2_z"/>
+    <motor name="shoulder_y_right"   gear="80"  joint="shoulder_y_right"/>
+    <motor name="shoulder_z_right"   gear="80"  joint="shoulder_z_right"/>
+    <motor name="elbow_right"        gear="80"  joint="elbow_right"/>
+    <motor name="wrist_y_right"      gear="80"  joint="wrist_y_right"/>
+    <motor name="wrist_z_right"      gear="80"  joint="wrist_z_right"/>
+    <motor name="shoulder_y_left"    gear="80"  joint="shoulder_y_left"/>
+    <motor name="shoulder_z_left"    gear="80"  joint="shoulder_z_left"/>
+    <motor name="elbow_left"         gear="80"  joint="elbow_left"/>
+    <motor name="wrist_y_left"       gear="80"  joint="wrist_y_left"/>
+    <motor name="wrist_z_left"       gear="80"  joint="wrist_z_left"/>
+    <motor name="neck"               gear="80"  joint="neckjnt"/>
+  </actuator>
 </mujoco>

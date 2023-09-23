@@ -1,0 +1,16 @@
+<mujoco>
+    <worldbody>
+        <light diffuse="0.4 0.4 0.4" specular="0.2 0.2 0.2" pos="0 0 4" dir="0 0 -1" />
+        <geom type="plane" size="1 1 0.1" rgba="0.2 0.4 0 1" />
+        <body pos="0 0 0.3">
+            <geom type="sphere" size="0.07" rgba="1 0 0 1" />
+            <joint name="ball_jnt" type="ball"  stiffness="10"/>
+            <body>
+                <geom type="cylinder" size="0.03 0.15" rgba="0 0 1 1" pos="0 0 0.2" />
+            </body>
+        </body>
+    </worldbody>
+    <actuator>
+        <motor name="ball_act" gear="40"  joint="ball_jnt"/>
+    </actuator>
+</mujoco>

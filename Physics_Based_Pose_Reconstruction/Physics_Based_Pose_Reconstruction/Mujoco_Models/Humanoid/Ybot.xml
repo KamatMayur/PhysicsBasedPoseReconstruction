@@ -1,0 +1,282 @@
+<mujoco model="Ybot">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <default>
+    <motor ctrlrange="-1 1" ctrllimited="true"/>
+    <default class="body">
+      <!-- joints -->
+      <joint type="hinge" damping=".2" stiffness="1" armature=".01" limited="true" solimplimit="0 .99 .01"/>
+      <default class="joint_big">
+        <joint damping="5" stiffness="10"/>
+        <default class="hip_y">
+          <joint range="-30 10"/>
+        </default>
+        <default class="hip_z">
+          <joint range="-60 35"/>
+        </default>
+        <default class="hip_x">
+          <joint range="-150 20"/>
+        </default>
+        <default class="joint_big_stiff">
+          <joint stiffness="20"/>
+        </default>
+      </default>
+      <default class="knee">
+        <joint  range="-160 2"/>
+      </default>
+      <default class="ankle">
+        <joint  stiffness="6"/>
+      </default>
+      <default class="wrist">
+        <joint stiffness="2" />
+      </default>
+      <default class="neck">
+        <joint type="ball" range="0 60" stiffness="2.5"/>
+      </default>
+      <default class="shoulder_x">
+        <joint range="-85 70"/>
+      </default>
+      <default class="shoulder_z">
+        <joint range="-25 85"/>
+      </default>
+      <default class="elbow">
+        <joint range="0 150" stiffness="0"/>
+      </default>
+    </default>
+  </default>
+
+  <asset>
+    <material name="M_Abdomen" specular="0.5" shininess="0.25" rgba="0.800000 0.000000 0.055873 1.000000"/>
+    <material name="M_Chest" specular="0.5" shininess="0.25" rgba="0.800000 0.074853 0.000000 1.000000"/>
+    <material name="M_Head" specular="0.5" shininess="0.25" rgba="0.738936 0.800000 0.000000 1.000000"/>
+    <material name="M_L_Foot" specular="0.5" shininess="0.25" rgba="0.134163 0.117108 0.800000 1.000000"/>
+    <material name="M_L_Hand" specular="0.5" shininess="0.25" rgba="0.000000 0.044794 0.800000 1.000000"/>
+    <material name="M_L_L_Arm" specular="0.5" shininess="0.25" rgba="0.800000 0.216409 0.001138 1.000000"/>
+    <material name="M_L_L_Leg" specular="0.5" shininess="0.25" rgba="0.228607 0.000000 0.800000 1.000000"/>
+    <material name="M_L_Toe" specular="0.5" shininess="0.25" rgba="0.074047 0.754665 0.800000 1.000000"/>
+    <material name="M_L_U_Arm" specular="0.5" shininess="0.25" rgba="0.000000 0.207547 0.800000 1.000000"/>
+    <material name="M_L_U_Leg" specular="0.5" shininess="0.25" rgba="0.800000 0.000000 0.258574 1.000000"/>
+    <material name="M_Pelvis" specular="0.5" shininess="0.25" rgba="0.000000 0.800000 0.017419 1.000000"/>
+    <material name="M_R_Foot" specular="0.5" shininess="0.25" rgba="0.134163 0.117108 0.800000 1.000000"/>
+    <material name="M_R_Hand" specular="0.5" shininess="0.25" rgba="0.000000 0.044794 0.800000 1.000000"/>
+    <material name="M_R_L_Arm" specular="0.5" shininess="0.25" rgba="0.800000 0.216409 0.001138 1.000000"/>
+    <material name="M_R_L_Leg" specular="0.5" shininess="0.25" rgba="0.228607 0.000000 0.800000 1.000000"/>
+    <material name="M_R_Toe" specular="0.5" shininess="0.25" rgba="0.074047 0.754665 0.800000 1.000000"/>
+    <material name="M_R_U_Arm" specular="0.5" shininess="0.25" rgba="0.000000 0.207547 0.800000 1.000000"/>
+    <material name="M_R_U_Leg" specular="0.5" shininess="0.25" rgba="0.800000 0.000000 0.258574 1.000000"/>
+    <mesh file="R_Hand.obj"/>
+    <mesh file="R_L_Arm.obj"/>
+    <mesh file="R_U_Arm.obj"/>
+    <mesh file="L_Hand.obj"/>
+    <mesh file="L_L_Arm.obj"/>
+    <mesh file="L_U_Arm.obj"/>
+    <mesh file="Head.obj"/>
+    <mesh file="Chest.obj"/>
+    <mesh file="Abdomen.obj"/>
+    <mesh file="Pelvis.obj"/>
+    <mesh file="R_U_Leg.obj"/>
+    <mesh file="L_U_Leg.obj"/>
+    <mesh file="L_L_Leg.obj"/>
+    <mesh file="R_L_Leg.obj"/>
+    <mesh file="R_Foot.obj"/>
+    <mesh file="R_Toe.obj"/>
+    <mesh file="L_Foot.obj"/>
+    <mesh file="L_Toe.obj"/>
+  </asset>
+
+  <worldbody>
+    <light diffuse=".6 .6 .6" specular="0.2 0.2 0.2" pos="0 0 4" dir="0 0 -1"/>
+    <body name="Ground">
+      <geom type="plane" size= "3 3 0.1" rgba="1 1 1 1" />
+    </body>
+  
+      <body pos='0 0 2'>
+        <geom mesh="Pelvis" material="M_Pelvis" class="visual"/>
+        <geom mesh="Pelvis" class="collision"/>
+        <freejoint name="root"/>
+        <body>
+          <joint name="hip_y_right" axis="0 -1 0" pos="-0.1077 -0.0147 -0.0364" class="hip_y"/>
+          <joint name="hip_x_right" axis="1 0 0" pos="-0.1077 -0.0147 -0.0364" class="hip_x"/>
+          <joint name="hip_z_right" axis="0 0 -1" pos="-0.1077 -0.0147 -0.0364" class="hip_z"/>
+         
+          <geom mesh="R_U_Leg" material="M_R_U_Leg" class="visual"/>
+          <geom mesh="R_U_Leg" class="collision"/>
+          <body>
+            <joint name="knee_right" axis="-1 0 0" pos="-0.0977 -0.0147 -0.4664" class="knee"/>
+
+            <geom mesh="R_L_Leg" material="M_R_L_Leg" class="visual"/>
+            <geom mesh="R_L_Leg" class="collision"/>
+            <body>
+              <joint name="ankle_x_right" axis="1 0 0" range="-30 40" pos="-0.079 0.0147 -0.8764" class="ankle"/>
+              <joint name="ankle_z_right" axis="0 0 -1" range="-10 10" pos="-0.079 0.0147 -0.8764" class="ankle"/>
+              
+              <geom mesh="R_Foot" material="M_R_Foot" class="visual"/>
+              <geom mesh="R_Foot"  class="collision"/>
+              <body>
+                <geom mesh="R_Toe" material="M_R_Toe" class="visual"/>
+                <geom mesh="R_Toe" class="collision"/>
+              </body>
+            </body>
+          </body>
+        </body>
+        <body>
+          <joint name="hip_y_left" axis="0 1 0" pos="0.1077 -0.0147 -0.0364" class="hip_y"/>
+          <joint name="hip_x_left" axis="1 0 0" pos="0.1077 -0.0147 -0.0364" class="hip_x"/>
+          <joint name="hip_z_left" axis="0 0 1" pos="0.1077 -0.0147 -0.0364" class="hip_z"/>
+          
+          <geom mesh="L_U_Leg" material="M_L_U_Leg" class="visual"/>
+          <geom mesh="L_U_Leg" class="collision"/>
+          <body>
+            <joint name="knee_left" axis="-1 0 0" pos="0.0977 -0.0147 -0.4664" class="knee"/>
+
+            <geom mesh="L_L_Leg" material="M_L_L_Leg" class="visual"/>
+            <geom mesh="L_L_Leg" class="collision"/>
+            <body>
+              <joint name="ankle_x_left" axis="1 0 0" range="-30 40" pos="0.079 0.0147 -0.8764" class="ankle"/>
+              <joint name="ankle_z_left" axis="0 0 1" range="-10 10" pos="0.079 0.0147 -0.8764" class="ankle"/>
+
+              <geom mesh="L_Foot" material="M_L_Foot" class="visual"/>
+              <geom mesh="L_Foot"  class="collision"/>
+              <body>
+                <geom mesh="L_Toe" material="M_L_Toe" class="visual"/>
+                <geom mesh="L_Toe" class="collision"/>
+              </body>
+            </body>
+          </body>
+        </body>
+        <body>
+          <joint name="spine_1_x" axis="1 0 0" pos="0 -0.0347 0.1264" range="-15 35" class="joint_big_stiff"/>
+          <joint name="spine_1_y" axis="0 1 0" pos="0 -0.0347 0.1264" range="-20 20" class="joint_big_stiff"/>
+          <joint name="spine_1_z" axis="0 0 1" pos="0 -0.0347 0.1264" range="-10 10" class="joint_big_stiff"/>
+
+          <geom mesh="Abdomen" material="M_Abdomen" class="visual"/>
+          <geom mesh="Abdomen" class="collision"/>
+          <body>
+            <joint name="spine_2_x" axis="1 0 0" pos="0 -0.0347 0.2764" range="-15 50" class="joint_big_stiff"/>
+            <joint name="spine_2_y" axis="0 1 0" pos="0 -0.0347 0.2764" range="-20 20" class="joint_big_stiff"/>
+            <joint name="spine_2_z" axis="0 0 1" pos="0 -0.0347 0.2764" range="-30 30" class="joint_big_stiff"/>
+
+            <geom mesh="Chest" material="M_Chest" class="visual"/>
+            <geom mesh="Chest" class="collision"/>
+
+            <body>
+              <joint name="neckjnt" axis="0 0 1" pos="0 0 0.56" class="neck" />
+            
+              <geom mesh="Head" material="M_Head" class="visual"/>
+              <geom mesh="Head" class="collision"/>
+            </body>
+            <body>
+              <joint name="shoulder_y_right" axis="0 1 0" pos="-0.2077 0.0147 0.4664" class="shoulder_x"/>
+              <joint name="shoulder_z_right" axis="0 0 1" pos="-0.2077 0.0147 0.4664" class="shoulder_z"/>
+
+              <geom mesh="R_U_Arm" material="M_R_U_Arm" class="visual"/>
+              <geom mesh="R_U_Arm" class="collision"/>
+              <body>
+                <joint name="elbow_right" axis="0 0 1" pos="-0.4577 0.0247 0.4664" class="elbow"/>
+
+                <geom mesh="R_L_Arm" material="M_R_L_Arm" class="visual"/>
+                <geom mesh="R_L_Arm" class="collision"/>
+                <body>
+                  <joint name="wrist_y_right" axis="0 -1 0" pos="-0.7377 0.0347 0.4664" range="-75 60" class="wrist"/>
+                  <joint name="wrist_z_right" axis="0 0 -1" pos="-0.7377 0.0347 0.4664" range="0 20" class="wrist"/>
+
+                  <geom mesh="R_Hand" material="M_R_Hand" class="visual"/>
+                  <geom mesh="R_Hand"  class="collision"/>
+                </body>
+              </body>
+            </body>
+            <body>
+              <joint name="shoulder_y_left" axis="0 -1 0" pos="0.2077 0.0147 0.4664" class="shoulder_x"/>
+              <joint name="shoulder_z_left" axis="0 0 -1" pos="0.2077 0.0147 0.4664" class="shoulder_z"/>
+
+              <geom mesh="L_U_Arm" material="M_L_U_Arm" class="visual"/>
+              <geom mesh="L_U_Arm" class="collision"/>
+              <body>
+                <joint name="elbow_left" axis="0 0 -1" pos="0.4577 0.0247 0.4664" class="elbow"/>
+
+                <geom mesh="L_L_Arm" material="M_L_L_Arm" class="visual"/>
+                <geom mesh="L_L_Arm" class="collision"/>
+                <body>
+                  <joint name="wrist_y_left" axis="0 1 0" pos="0.7377 0.0347 0.4664" range="-75 60" class="wrist"/>
+                  <joint name="wrist_z_left" axis="0 0 1" pos="0.7377 0.0347 0.4664" range="0 20" class="wrist"/>
+
+                  <geom mesh="L_Hand" material="M_L_Hand" class="visual"/>
+                  <geom mesh="L_Hand"  class="collision"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+  </worldbody>
+  
+  <actuator>
+    <motor name="hip_y_right"        gear="80"  joint="hip_y_right"/>
+    <motor name="hip_x_right"        gear="80"  joint="hip_x_right"/>
+    <motor name="hip_z_right"        gear="80"  joint="hip_z_right"/>
+    <motor name="knee_right"         gear="80"  joint="knee_right"/>
+    <motor name="ankle_x_right"      gear="80"  joint="ankle_x_right"/>
+    <motor name="ankle_z_right"      gear="80"  joint="ankle_z_right"/>
+    <motor name="hip_y_left"         gear="80"  joint="hip_y_left"/>
+    <motor name="hip_x_left"         gear="80"  joint="hip_x_left"/>
+    <motor name="hip_z_left"         gear="80"  joint="hip_z_left"/>
+    <motor name="knee_left"          gear="80"  joint="knee_left"/>
+    <motor name="ankle_x_left"       gear="80"  joint="ankle_x_left"/>
+    <motor name="ankle_z_left"       gear="80"  joint="ankle_z_left"/>
+    <motor name="spine_1_x"          gear="80"  joint="spine_1_x"/>
+    <motor name="spine_1_y"          gear="80"  joint="spine_1_y"/>
+    <motor name="spine_1_z"          gear="80"  joint="spine_1_z"/>
+    <motor name="spine_2_x"          gear="80"  joint="spine_2_x"/>
+    <motor name="spine_2_y"          gear="80"  joint="spine_2_y"/>
+    <motor name="spine_2_z"          gear="80"  joint="spine_2_z"/>
+    <motor name="shoulder_y_right"   gear="80"  joint="shoulder_y_right"/>
+    <motor name="shoulder_z_right"   gear="80"  joint="shoulder_z_right"/>
+    <motor name="elbow_right"        gear="80"  joint="elbow_right"/>
+    <motor name="wrist_y_right"      gear="80"  joint="wrist_y_right"/>
+    <motor name="wrist_z_right"      gear="80"  joint="wrist_z_right"/>
+    <motor name="shoulder_y_left"    gear="80"  joint="shoulder_y_left"/>
+    <motor name="shoulder_z_left"    gear="80"  joint="shoulder_z_left"/>
+    <motor name="elbow_left"         gear="80"  joint="elbow_left"/>
+    <motor name="wrist_y_left"       gear="80"  joint="wrist_y_left"/>
+    <motor name="wrist_z_left"       gear="80"  joint="wrist_z_left"/>
+    <motor name="neck"               gear="80"  joint="neckjnt"/>
+  </actuator>
+
+  <sensor>
+    <jointpos name="hip_y_right"        joint="hip_y_right"/>
+    <jointpos name="hip_x_right"        joint="hip_x_right"/>
+    <jointpos name="hip_z_right"        joint="hip_z_right"/>
+    <jointpos name="knee_right"         joint="knee_right"/>
+    <jointpos name="ankle_x_right"      joint="ankle_x_right"/>
+    <jointpos name="ankle_z_right"      joint="ankle_z_right"/>
+    <jointpos name="hip_y_left"         joint="hip_y_left"/>
+    <jointpos name="hip_x_left"         joint="hip_x_left"/>
+    <jointpos name="hip_z_left"         joint="hip_z_left"/>
+    <jointpos name="knee_left"          joint="knee_left"/>
+    <jointpos name="ankle_x_left"       joint="ankle_x_left"/>
+    <jointpos name="ankle_z_left"       joint="ankle_z_left"/>
+    <jointpos name="spine_1_x"          joint="spine_1_x"/>
+    <jointpos name="spine_1_y"          joint="spine_1_y"/>
+    <jointpos name="spine_1_z"          joint="spine_1_z"/>
+    <jointpos name="spine_2_x"          joint="spine_2_x"/>
+    <jointpos name="spine_2_y"          joint="spine_2_y"/>
+    <jointpos name="spine_2_z"          joint="spine_2_z"/>
+    <jointpos name="shoulder_y_right"   joint="shoulder_y_right"/>
+    <jointpos name="shoulder_z_right"   joint="shoulder_z_right"/>
+    <jointpos name="elbow_right"        joint="elbow_right"/>
+    <jointpos name="wrist_y_right"      joint="wrist_y_right"/>
+    <jointpos name="wrist_z_right"      joint="wrist_z_right"/>
+    <jointpos name="shoulder_y_left"    joint="shoulder_y_left"/>
+    <jointpos name="shoulder_z_left"    joint="shoulder_z_left"/>
+    <jointpos name="elbow_left"         joint="elbow_left"/>
+    <jointpos name="wrist_y_left"       joint="wrist_y_left"/>
+    <jointpos name="wrist_z_left"       joint="wrist_z_left"/>
+   
+  </sensor>
+</mujoco>

@@ -4,6 +4,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
+def create_spine(results):
+
+
+    top_spine_x =(results.pose_landmarks.landmark[11].x + results.pose_landmarks.landmark[12].x)/2
+    bottom_spine_x =(results.pose_landmarks.landmark[24].x + results.pose_landmarks.landmark[23].x)/2
+
+
+    top_spine_y =(results.pose_landmarks.landmark[11].y + results.pose_landmarks.landmark[12].y)/2
+    bottom_spine_y =(results.pose_landmarks.landmark[24].y + results.pose_landmarks.landmark[23].y)/2
+
+    top_spine_z =(results.pose_landmarks.landmark[11].z + results.pose_landmarks.landmark[12].z)/2
+    bottom_spine_z =(results.pose_landmarks.landmark[24].z + results.pose_landmarks.landmark[23].z)/2
+
+    top_spine = [top_spine_x , top_spine_y , top_spine_z]
+    bottom_spine = [bottom_spine_x , bottom_spine_y , bottom_spine_z]
+
+    print(len(results.pose_landmarks.landmark))
+
+
+
 
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
@@ -60,32 +80,6 @@ def position_from_image(input_image):
     # print(results.pose_landmarks.landmark[12])
 
 
-    # # import matplotlib.pyplot as plt
-    # x = []
-    # y= []
-    # z= []
-    # for idx , landmark in enumerate(results.pose_landmarks.landmark):
-    #     x.append(landmark.x)
-    #     y.append(landmark.y)
-    #     z.append(landmark.z)
-
-    # # plt.plot([int(i) for i in range(len(x))] , x , color ='r')
-    # # plt.plot( [int(i) for i in range(len(y))] , y , color ='g')
-    # # plt.plot( [int(i) for i in range(len(z)) ] , z, color ='b')
-    # # plt.show()
-
-
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111 , projection='3d')
-    # # ax.plot_surface(x , y ,z)
-    # ax.scatter(x, y, z, marker='o', color='b')
-
-    # ax.set_xlabel('X')
-    # ax.set_ylabel('Y')
-    # ax.set_zlabel('Z')
-
-    # plt.show()
-
 
 
     cv2.imshow('Loaded Image', frame_rgb)
@@ -129,20 +123,6 @@ def position_from_webcam():
         # Display the frame with landmarks (optional)
         frame_rgb.flags.writeable = True
         frame_rgb = cv2.cvtColor(frame_rgb , cv2.COLOR_RGB2BGR)
-        # import matplotlib.pyplot as plt
-        # x = []
-        # y= []
-        # z= []
-        # for idx , landmark in enumerate(results.pose_landmarks.landmark):
-        #     x.append(landmark.x)
-        #     y.append(landmark.y)
-        #     z.append(landmark.z)
-
-        # plt.plot([int(i) for i in range(len(x))] , x , color ='r')
-        # plt.plot( [int(i) for i in range(len(y))] , y , color ='g')
-        # plt.plot( [int(i) for i in range(len(z)) ] , z, color ='b')
-        # plt.show()
-
 
         mp_drawing.draw_landmarks(frame_rgb , results.pose_landmarks , mp_pose.POSE_CONNECTIONS)
 
@@ -150,24 +130,11 @@ def position_from_webcam():
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
-    import matplotlib.pyplot as plt
-    x = []
-    y= []
-    z= []
-    for idx , landmark in enumerate(results.pose_landmarks.landmark):
-        x.append(landmark.x)
-        y.append(landmark.y)
-        z.append(landmark.z)
-
-    plt.plot([int(i) for i in range(len(x))] , x , color ='r')
-    plt.plot( [int(i) for i in range(len(y))] , y , color ='g')
-    plt.plot( [int(i) for i in range(len(z)) ] , z, color ='b')
-    plt.show()
-
-
+   
     # Release resources
     cap.release()
     cv2.destroyAllWindows()
+    return results
     
 
 def position_from_video(input_video):
@@ -215,10 +182,6 @@ def position_from_video(input_video):
     # Release resources
     cap.release()
     cv2.destroyAllWindows()
+    return results
 
-# position_from_video(input_video='WIN_20230921_00_54_11_Pro.mp4')       
-
-# position_from_webcam()
-position_from_image(input_image='images.jpg')
-# position_from_webcam()
-
+# position_from_image("test_image1.jpg")

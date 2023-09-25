@@ -3,26 +3,7 @@ import mediapipe as mp
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
-
-def create_spine(results):
-
-
-    top_spine_x =(results.pose_landmarks.landmark[11].x + results.pose_landmarks.landmark[12].x)/2
-    bottom_spine_x =(results.pose_landmarks.landmark[24].x + results.pose_landmarks.landmark[23].x)/2
-
-
-    top_spine_y =(results.pose_landmarks.landmark[11].y + results.pose_landmarks.landmark[12].y)/2
-    bottom_spine_y =(results.pose_landmarks.landmark[24].y + results.pose_landmarks.landmark[23].y)/2
-
-    top_spine_z =(results.pose_landmarks.landmark[11].z + results.pose_landmarks.landmark[12].z)/2
-    bottom_spine_z =(results.pose_landmarks.landmark[24].z + results.pose_landmarks.landmark[23].z)/2
-
-    top_spine = [top_spine_x , top_spine_y , top_spine_z]
-    bottom_spine = [bottom_spine_x , bottom_spine_y , bottom_spine_z]
-
-    print(len(results.pose_landmarks.landmark))
-
-
+import add_spine
 
 
 mp_pose = mp.solutions.pose
@@ -49,6 +30,7 @@ def position_from_image(input_image):
             x = landmark.x
             y = landmark.y
             z = landmark.z
+            
 
         # Write the landmarks to the CSV file
             with open(output_file, mode='a', newline='') as file:

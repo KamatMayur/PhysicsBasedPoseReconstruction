@@ -1,8 +1,7 @@
-#include <GLFW/glfw3.h>
-#include <mujoco/mujoco.h>
-#include <shared_data.h>
+#pragma once
 #include <callbacks.h>
-#include <iostream>
+#include <shared_data.h>
+
 
 using namespace std;
 
@@ -16,6 +15,8 @@ mjvOption opt;		//visualization options
 mjvScene scn;		//abstract scene
 mjrContext con;		//custom GPU context
 
+SOCKET client_socket;
+SOCKET server_socket;
 
 int main() {
 
@@ -24,7 +25,7 @@ int main() {
 	m = mj_loadXML(model_path, 0, err, 500);
 	d = mj_makeData(m);
 
-	if (!glfwInit()) 
+	if (!glfwInit())
 		mju_error("GLFW not initialized");
 
 	GLFWwindow* window;
@@ -46,10 +47,14 @@ int main() {
 	//set input event callbacks
 	glfwSetKeyCallback(window, keyboard_callback);
 	glfwSetCursorPosCallback(window, mouse_position_callback);
-	glfwSetMouseButtonCallback(window,mouse_button_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
-	while(!glfwWindowShouldClose(window)){
-		
+	//start the server and client
+	if (init_sockets()) cout << "Server and Client initalized /n";
+	else return 0;
+
+	while (!glfwWindowShouldClose(window)) {
+
 		mjtNum sim_start = d->time;
 		while (d->time - sim_start < 1.0 / 60.0) {
 			mj_step(m, d);
@@ -78,6 +83,10 @@ int main() {
 	// free MuJoCo model and data, deactivate
 	mj_deleteData(d);
 	mj_deleteModel(m);
+
+	closesocket(client_socket);
+	closesocket(server_socket);
+	WSACleanup();
 
 	glfwTerminate();
 	return 1;

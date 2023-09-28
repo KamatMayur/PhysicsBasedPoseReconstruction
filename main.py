@@ -14,3 +14,4 @@ utils.plot3dcoordinates.plot_pose(results=results)
 4. access the env from py
 5. might have to include another func for ploting the pose from 3d model
 '''
+utils.getcoordinates.get_coordinates()

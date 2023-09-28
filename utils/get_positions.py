@@ -30,7 +30,7 @@ def position_from_image(input_image):
             x = landmark.x
             y = landmark.y
             z = landmark.z
-            
+
 
         # Write the landmarks to the CSV file
             with open(output_file, mode='a', newline='') as file:
@@ -41,28 +41,6 @@ def position_from_image(input_image):
     frame_rgb = cv2.cvtColor(frame_rgb , cv2.COLOR_RGB2BGR)
 
     mp_drawing.draw_landmarks(frame_rgb , results.pose_landmarks , mp_pose.POSE_CONNECTIONS)
-
-
-    top_spine_x =(results.pose_landmarks.landmark[11].x + results.pose_landmarks.landmark[12].x)/2
-    bottom_spine_x =(results.pose_landmarks.landmark[24].x + results.pose_landmarks.landmark[23].x)/2
-
-
-    top_spine_y =(results.pose_landmarks.landmark[11].y + results.pose_landmarks.landmark[12].y)/2
-    bottom_spine_y =(results.pose_landmarks.landmark[24].y + results.pose_landmarks.landmark[23].y)/2
-
-    top_spine_z =(results.pose_landmarks.landmark[11].z + results.pose_landmarks.landmark[12].z)/2
-    bottom_spine_z =(results.pose_landmarks.landmark[24].z + results.pose_landmarks.landmark[23].z)/2
-
-    top_spine = [top_spine_x , top_spine_y , top_spine_z]
-    bottom_spine = [bottom_spine_x , bottom_spine_y , bottom_spine_z]
-
-    print(top_spine , bottom_spine)
-    print(results.pose_landmarks.landmark[23] , results.pose_landmarks.landmark[24] )
-    print(results.pose_landmarks.landmark[0])
-    # print(results.pose_landmarks.landmark[12])
-
-
-
 
     cv2.imshow('Loaded Image', frame_rgb)
     cv2.waitKey(0)

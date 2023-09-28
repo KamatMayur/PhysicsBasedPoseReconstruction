@@ -7,3 +7,8 @@ class Env:
 
     def reward(self):
         pass
+
+"""
+1. we need to find out how many spaces are ther
+2. 
+"""

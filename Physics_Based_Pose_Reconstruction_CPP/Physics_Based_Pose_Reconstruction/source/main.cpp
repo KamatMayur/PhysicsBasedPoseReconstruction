@@ -19,6 +19,9 @@ SOCKET client_socket;
 SOCKET server_socket;
 
 int main() {
+	//start the server and client
+	if (init_sockets()) cout << "Server and Client initalized /n";
+	else return 0;
 
 	char err[500] = "ERROR: Could not load the XML model!";
 	//Load the XML model and make the mjData
@@ -48,10 +51,6 @@ int main() {
 	glfwSetKeyCallback(window, keyboard_callback);
 	glfwSetCursorPosCallback(window, mouse_position_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
-
-	//start the server and client
-	if (init_sockets()) cout << "Server and Client initalized /n";
-	else return 0;
 
 	while (!glfwWindowShouldClose(window)) {
 

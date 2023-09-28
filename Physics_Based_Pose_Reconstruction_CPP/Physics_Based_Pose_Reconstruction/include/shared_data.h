@@ -14,8 +14,8 @@ extern mjvOption opt;			//visualization options
 extern mjvScene scn;			//abstract scene
 extern mjrContext con;			//custom GPU context
 
-extern SOCKET client_socket;
-extern SOCKET server_socket;
+extern SOCKET client_socket;    //client socket (python)
+extern SOCKET server_socket;    //server socket
 
 //data needed to be shared across different programs.....Make sure to define the variables in some file.
 static void updateSharedData(mjData* d, mjModel* m, mjvCamera cam, mjvOption opt, mjvScene scn, mjrContext con) {
@@ -27,6 +27,7 @@ static void updateSharedData(mjData* d, mjModel* m, mjvCamera cam, mjvOption opt
     con = con;
 }
 
+//intitalizes the server and client sockets
 static bool init_sockets() {
     WSADATA wsa;
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {

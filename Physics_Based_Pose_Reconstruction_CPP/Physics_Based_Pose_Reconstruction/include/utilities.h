@@ -49,8 +49,9 @@ static bool get_joint_pos(vector<string> &names , vector<double> &x, vector<doub
 	int str_buffer_len = sizeof(string) * names.size();
 	char* str_buffer = new char[str_buffer_len];
 	memcpy(str_buffer, names.data(), str_buffer_len);
-	send(client_socket, str_buffer, sizeof(str_buffer), 0);					//upload names to the server
+	bytes_sent = send(client_socket, str_buffer, sizeof(str_buffer), 0);					//upload names to the server
 
+	//check if upload was successfull
 	if (bytes_sent == SOCKET_ERROR) {
 		cerr << "Sending X vector failed /n Exiting...";
 		closesocket(client_socket);

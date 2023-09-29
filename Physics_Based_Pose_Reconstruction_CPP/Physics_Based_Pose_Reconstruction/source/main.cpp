@@ -20,7 +20,7 @@ SOCKET server_socket;
 
 int main() {
 	//start the server and client
-	if (init_sockets()) cout << "Server and Client initalized /n";
+	if (init_sockets()) cout << "Server and Client initalized \n";
 	else return 0;
 
 	char err[500] = "ERROR: Could not load the XML model!";

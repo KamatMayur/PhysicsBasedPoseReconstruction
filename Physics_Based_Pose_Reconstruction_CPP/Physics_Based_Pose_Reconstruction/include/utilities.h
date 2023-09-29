@@ -21,7 +21,8 @@ static bool add_actuator_value(const char* name, const double value = 0)
 
 // Gives the global cartesian positon of the joints along with the corresponding joint names
 // and writes it to the server in order names->x->y->z
-static void get_joint_pos(vector<string> &names , vector<double> &x, vector<double> &y, vector<double> &z)
+// will return false if the upload to server fails
+static bool get_joint_pos(vector<string> &names , vector<double> &x, vector<double> &y, vector<double> &z)
 {
 	/*for (int i = 0; i < m->njnt; ++i)
 	{
@@ -41,25 +42,63 @@ static void get_joint_pos(vector<string> &names , vector<double> &x, vector<doub
 	}
 
 	//converts the arrays to byte strean and uploads it to a server
+	
+	int bytes_sent;															//stores the output of send() to check for errors
+
 	//buffer for string vector
 	int str_buffer_len = sizeof(string) * names.size();
 	char* str_buffer = new char[str_buffer_len];
 	memcpy(str_buffer, names.data(), str_buffer_len);
-	send(client_socket, str_buffer, sizeof(str_buffer), 0);		//upload names to the server
-	delete[] str_buffer;										//free the buffer
+	send(client_socket, str_buffer, sizeof(str_buffer), 0);					//upload names to the server
 
-	//buffer for double vector
+	if (bytes_sent == SOCKET_ERROR) {
+		cerr << "Sending X vector failed /n Exiting...";
+		closesocket(client_socket);
+		WSACleanup();
+		return false;
+
+	}
+	delete[] str_buffer;													//free the buffer
+
+	//buffer for double vector				
 	int doub_buffer_len = sizeof(double) * x.size();
 	char *doub_buffer = new char[doub_buffer_len];
 	memcpy(doub_buffer, x.data(), doub_buffer_len);
-	send(client_socket, doub_buffer, sizeof(doub_buffer), 0);	//upload x to the server 
+	bytes_sent = send(client_socket, doub_buffer, sizeof(doub_buffer), 0);	//upload x to the server 
+
+	//check if upload was successfull
+	if (bytes_sent == SOCKET_ERROR) {
+		cerr << "Sending X vector failed /n Exiting...";
+		closesocket(client_socket);
+		WSACleanup();
+		return false;
+
+	}
 
 	memcpy(doub_buffer, y.data(), doub_buffer_len);
-	send(client_socket, doub_buffer, sizeof(doub_buffer), 0);	//upload y to the server
+	bytes_sent = send(client_socket, doub_buffer, sizeof(doub_buffer), 0);	//upload y to the server
+
+	//check if upload was successfull
+	if (bytes_sent == SOCKET_ERROR) {
+		cerr << "Sending X vector failed /n Exiting...";
+		closesocket(client_socket);
+		WSACleanup();
+		return false;
+
+	}
 
 	memcpy(doub_buffer, z.data(), doub_buffer_len);
-	send(client_socket, doub_buffer, sizeof(doub_buffer), 0);	//upload z to the server 
-	delete[] doub_buffer;										//free the buffer
+	bytes_sent = send(client_socket, doub_buffer, sizeof(doub_buffer), 0);	//upload z to the server 
 
-	return;
+	//check if upload was successfull
+	if (bytes_sent == SOCKET_ERROR) {
+		cerr << "Sending X vector failed /n Exiting...";
+		closesocket(client_socket);
+		WSACleanup();
+		return false;
+
+	}
+	delete[] doub_buffer;													//free the buffer
+
+	return true;
 }

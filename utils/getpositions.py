@@ -49,6 +49,7 @@ def position_from_image(input_image):
     filtered_landmarks = remove_unwanted_landmarks(results.pose_landmarks.landmark)
     results.pose_landmarks.landmark.clear()
     results.pose_landmarks.landmark.extend(filtered_landmarks)
+
     frame_rgb.flags.writeable = True
     frame_rgb = cv2.cvtColor(frame_rgb , cv2.COLOR_RGB2BGR)
 
@@ -80,6 +81,7 @@ def position_from_webcam():
 
         # Run pose estimation on the frame
         results = pose.process(frame_rgb)
+        results = addspine.AddSpine(results = results)
 
         # Write all landmarks to the CSV file
         # if results.pose_landmarks:
@@ -94,10 +96,14 @@ def position_from_webcam():
                 #     writer.writerow([frame_count, idx, x, y, z])
 
         # Display the frame with landmarks (optional)
+        filtered_landmarks = remove_unwanted_landmarks(results.pose_landmarks.landmark)
+        results.pose_landmarks.landmark.clear()
+        results.pose_landmarks.landmark.extend(filtered_landmarks)
+
         frame_rgb.flags.writeable = True
         frame_rgb = cv2.cvtColor(frame_rgb , cv2.COLOR_RGB2BGR)
 
-        mp_drawing.draw_landmarks(frame_rgb , results.pose_landmarks , mp_pose.POSE_CONNECTIONS)
+        mp_drawing.draw_landmarks(frame_rgb , results.pose_landmarks )
 
         cv2.imshow('Video Stream', frame_rgb)
 
@@ -128,6 +134,7 @@ def position_from_video(input_video):
 
         # Run pose estimation on the frame
         results = pose.process(frame_rgb)
+        results = addspine.AddSpine(results = results)
 
         # Write all landmarks to the CSV file
         # if results.pose_landmarks:
@@ -142,10 +149,15 @@ def position_from_video(input_video):
                 #     writer.writerow([frame_count, idx, x, y, z])
 
         # Display the frame with landmarks (optional)
+        filtered_landmarks = remove_unwanted_landmarks(results.pose_landmarks.landmark)
+        results.pose_landmarks.landmark.clear()
+        results.pose_landmarks.landmark.extend(filtered_landmarks)
+
         frame_rgb.flags.writeable = True
         frame_rgb = cv2.cvtColor(frame_rgb , cv2.COLOR_RGB2BGR)
 
-        mp_drawing.draw_landmarks(frame_rgb , results.pose_landmarks , mp_pose.POSE_CONNECTIONS)
+        mp_drawing.draw_landmarks(frame_rgb , results.pose_landmarks)
+        # mp_drawing.draw_landmarks(frame_rgb , results.pose_landmarks , mp_pose.POSE_CONNECTIONS)
 
         cv2.imshow('Video Stream', frame_rgb)
 

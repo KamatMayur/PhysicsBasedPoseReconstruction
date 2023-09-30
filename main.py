@@ -1,6 +1,7 @@
 import utils
 
-results = utils.getpositions.position_from_image('test_image1.jpg')
+# results = utils.getpositions.position_from_image('test_image1.jpg')
+results = utils.getpositions.position_from_webcam()
 
 utils.plot3dcoordinates.plot_pose(results=results)
 

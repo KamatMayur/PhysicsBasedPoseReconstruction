@@ -1,6 +1,7 @@
 #pragma once
 #include <callbacks.h>
 #include <shared_data.h>
+#include <utilities.h>
 
 
 using namespace std;
@@ -51,6 +52,8 @@ int main() {
 	glfwSetKeyCallback(window, keyboard_callback);
 	glfwSetCursorPosCallback(window, mouse_position_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
+	get_joint_pos();
 
 	while (!glfwWindowShouldClose(window)) {
 

@@ -1,9 +1,9 @@
 import utils
 
-results = utils.getpositions.position_from_image('test_image1.jpg')
+# results = utils.getpositions.position_from_image('test_image1.jpg')
 
-results = utils.addspine.AddSpine(results = results)
-utils.plot3dcoordinates.plot_pose(results=results)
+# results = utils.addspine.AddSpine(results = results)
+# utils.plot3dcoordinates.plot_pose(results=results)
 
 
 ## to be done 

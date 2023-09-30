@@ -1,9 +1,8 @@
 import utils
 
-# results = utils.getpositions.position_from_image('test_image1.jpg')
+results = utils.getpositions.position_from_image('test_image1.jpg')
 
-# results = utils.addspine.AddSpine(results = results)
-# utils.plot3dcoordinates.plot_pose(results=results)
+utils.plot3dcoordinates.plot_pose(results=results)
 
 
 ## to be done 
@@ -14,4 +13,6 @@ import utils
 4. access the env from py
 5. might have to include another func for ploting the pose from 3d model
 '''
-utils.getcoordinates.get_coordinates()
+# utils.getcoordinates.get_coordinates()
+
+print(len(results.pose_landmarks.landmark))

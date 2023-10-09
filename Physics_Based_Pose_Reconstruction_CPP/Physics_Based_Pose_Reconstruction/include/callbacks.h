@@ -1,7 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <mujoco/mujoco.h>
 #include <inputactions.h>
-#include <shared_data.h>
 #include <iostream>
 #include <map>
 

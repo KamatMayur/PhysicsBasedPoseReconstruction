@@ -46,7 +46,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -76,7 +76,9 @@
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Dependencies\include;$(SolutionDir)Physics_Based_Pose_Reconstruction\include</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Dependencies\include;$(SolutionDir)Dependencies\pybind11-2.11.1\include;$(SolutionDir)Physics_Based_Pose_Reconstruction\include;C:\Users\mayur\anaconda3\envs\fyp\include</ExternalIncludePath>
+    <TargetExt>.pyd</TargetExt>
+    <LibraryPath>$(SolutionDir)Dependencies\lib;C:\Users\mayur\anaconda3\envs\fyp\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -137,7 +139,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);mujoco.lib;glfw3dll.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);mujoco.lib;glfw3dll.lib;python311.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -153,7 +155,6 @@
   <ItemGroup>
     <ClInclude Include="include\callbacks.h" />
     <ClInclude Include="include\inputactions.h" />
-    <ClInclude Include="include\shared_data.h" />
     <ClInclude Include="include\simulate.h" />
     <ClInclude Include="include\utilities.h" />
   </ItemGroup>

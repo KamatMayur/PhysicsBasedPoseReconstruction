@@ -1,23 +1,19 @@
 #pragma once
 #include <simulate.h>
-
+#include <thread>
 
 using namespace std;
 
-//mujoco data structures
-mjModel* m = NULL;	//pointer to mjModel
-mjData* d = NULL;	//pointer to mjData
-mjvCamera cam;		//abstract camera
-mjvOption opt;		//visualization options
-mjvScene scn;		//abstract scene
-mjrContext con;		//custom GPU context
 
-int simulate(char* model_path) {
-
+simulation::simulation(const char* model_path) {
 	char err[500] = "ERROR: Could not load the XML model!";
 	//Load the XML model and make the mjData
 	m = mj_loadXML(model_path, 0, err, 500);
 	d = mj_makeData(m);
+	this->model_path = model_path;
+}
+
+void simulation::simulate() {
 
 	if (!glfwInit())
 		mju_error("GLFW not initialized");
@@ -50,8 +46,9 @@ int simulate(char* model_path) {
 		mjtNum sim_start = d->time;
 		while (d->time - sim_start < 1.0 / 60.0) {
 			mj_step(m, d);
-			updateSharedData(d, m, cam, opt, scn, con);
+			this->info = this->get_joint_pos();
 		}
+		
 		//Create a rectangula viewport and render the model
 		mjrRect viewport = { 0, 0, 0, 0 };
 		glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
@@ -77,7 +74,17 @@ int simulate(char* model_path) {
 	mj_deleteModel(m);
 
 	glfwTerminate();
-	return 1;
 
+}
+
+utilities::jnt_info simulation::get_joint_pos()
+{
+	return utilities::get_joint_pos(m, d);
+	
+}
+
+bool simulation::add_actuator_value(const char* name, const double value)
+{
+	return utilities::add_actuator_value(d, m, name, value);
 }
 

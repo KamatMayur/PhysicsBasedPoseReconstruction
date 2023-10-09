@@ -1,7 +1,6 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <mujoco/mujoco.h>
-#include <shared_data.h>
 #include <utilities.h>
 #include <iostream>
 

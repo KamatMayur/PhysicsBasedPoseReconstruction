@@ -1,5 +1,5 @@
 <mujoco model="Ybot">
-	<option gravity="0 0 0"/>
+	<option gravity="0 0 -0.98"/>
   <default>
     <default class="visual">
       <geom group="2" type="mesh" contype="0" conaffinity="0"/>

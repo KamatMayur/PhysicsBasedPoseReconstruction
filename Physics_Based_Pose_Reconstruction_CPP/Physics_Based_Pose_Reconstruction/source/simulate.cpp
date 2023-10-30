@@ -39,8 +39,6 @@ void simulation::simulate() {
 	glfwSetCursorPosCallback(window, mouse_position_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
-	get_joint_pos();
-
 	while (!glfwWindowShouldClose(window)) {
 
 		mjtNum sim_start = d->time;
@@ -62,7 +60,6 @@ void simulation::simulate() {
 
 		// Handle simultaneous key presses
 		handle_multikey_press();
-
 	}
 
 	// free visualization storage
@@ -74,13 +71,12 @@ void simulation::simulate() {
 	mj_deleteModel(m);
 
 	glfwTerminate();
-
 }
 
 utilities::jnt_info simulation::get_joint_pos()
 {
-	return utilities::get_joint_pos(m, d);
-	
+	info = utilities::get_joint_pos(m, d);
+	return info;
 }
 
 bool simulation::add_actuator_value(const char* name, const double value)

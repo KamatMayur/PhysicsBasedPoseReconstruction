@@ -32,7 +32,8 @@ PYBIND11_MODULE(Physics_Based_Pose_Reconstruction , m) {
     // Define the Python bindings for the simulation class
     py::class_<simulation>(m, "simulation")
         .def(py::init<const char*>())
-        .def("simulate", &simulation::simulate)
-        .def_readonly("info", &simulation::info)
+        .def("simulate", &simulation::simulate, py::call_guard<py::gil_scoped_release>())
+        .def("add_actuator_value", &simulation::add_actuator_value, py::call_guard<py::gil_scoped_release>())
+        .def_readonly ("info", &simulation::info)
         .def_readonly("model_path", &simulation::model_path);
 }

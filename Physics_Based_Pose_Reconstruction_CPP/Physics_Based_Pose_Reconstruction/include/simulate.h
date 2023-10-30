@@ -18,8 +18,8 @@ public:
 	const char* model_path;	//path to the mujoco xml model
 	simulation(const char* model_path);
 	void simulate();
+	bool add_actuator_value(const char* name, const double value = 0);
 private:
 	utilities::jnt_info get_joint_pos();
-	bool add_actuator_value(const char* name, const double value = 0);
 
 };

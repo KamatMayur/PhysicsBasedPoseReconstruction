@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ExternalIncludePath>C:\Users\mayur\anaconda3\envs\test\include;$(SolutionDir)Dependencies\pybind11-2.11.1\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Dependencies\include;$(SolutionDir)Physics_Based_Pose_Reconstruction\include</ExternalIncludePath>
-    <LibraryPath>C:\Users\mayur\anaconda3\envs\test\libs;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>C:\Users\mayur\anaconda3\envs\fyp\include;$(SolutionDir)Dependencies\pybind11-2.11.1\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Dependencies\include;$(SolutionDir)Physics_Based_Pose_Reconstruction\include</ExternalIncludePath>
+    <LibraryPath>C:\Users\mayur\anaconda3\envs\fyp\libs;$(SolutionDir)Dependencies\lib;$(LibraryPath)</LibraryPath>
     <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

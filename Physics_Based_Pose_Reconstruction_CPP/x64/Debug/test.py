@@ -1,31 +1,44 @@
-import Physics_Based_Pose_Reconstruction as pbpr
+# import Physics_Based_Pose_Reconstruction as pbpr
+
+# sim = pbpr.simulation("C:/Users/mayur/Desktop/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid/Ybot.xml")
+
+# sim.simulate()
 import threading
-import queue
+import time
+import Physics_Based_Pose_Reconstruction as pbpr
 
-# Create a queue to share data between threads
-result_queue = queue.Queue()
+x = True
+def print_info(sim):
+    global x
+    while True:
+        x = not x 
+        start_time = time.time()
+        while True:
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+            if x : print(sim.add_actuator_value("elbow_left", +1.0))
+            else : print(sim.add_actuator_value("elbow_left", -1.0))
+            if elapsed_time > 0.5 : break
 
-# Define a function to run the simulation
-def run_simulation():
-    pbpr.simulate("C:/Users/mayur/OneDrive/Documents/GitHub/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid/ybot.xml")
-    result = pbpr.get_jnt_pos()
-    result_queue.put(result)  # Put the result in the queue
+        try:
+            print(sim.info)
+        except UnicodeDecodeError as e:
+            print(f"UnicodeDecodeError: {e}")
+        time.sleep(.6)
+        
 
-# Start the simulation thread
-sim_thread = threading.Thread(target=run_simulation)
-sim_thread.start()
+# Creating an instance of the class
+sim = pbpr.simulation("C:/Users/mayur/Desktop/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid/Ybot.xml")
 
-# Continue to access values while the simulation is running
-while True:
-    try:
-        val = result_queue.get_nowait()
-        print(val.jnt_num)
-        # Process the result as needed
-    except queue.Empty:
-        # Queue is empty, so the simulation hasn't finished yet
-        # You can do other work or just wait here
-        pass
+# Creating threads
+simulate_thread = threading.Thread(target=sim.simulate)
+print_thread = threading.Thread(target=print_info, args=(sim,))
 
-    # Add a condition to break the loop if the simulation is done
-    if not sim_thread.is_alive():
-        break
+# Starting threads
+simulate_thread.start()
+print_thread.start()
+
+# Waiting for threads to finish
+print_thread.join()
+simulate_thread.join()
+

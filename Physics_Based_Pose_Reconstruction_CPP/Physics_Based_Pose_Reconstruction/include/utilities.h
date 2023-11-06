@@ -11,7 +11,9 @@ namespace utilities {
 	// structure to store joint information; currently stores names and locations;
 	struct jnt_info {
 		int jnt_num;
-		vector<string> names;
+		int act_num;
+		vector<string> jnt_names;
+		vector<string> act_names;
 		vector<double> x, y, z;
 	};
 
@@ -33,7 +35,7 @@ namespace utilities {
 	// Gives the global cartesian positon of the joints along with the corresponding joint names
 	// and writes it to the server in order names->x->y->z
 	// will return false if the upload to server fails
-	static jnt_info get_joint_pos(mjModel* m, mjData* d)
+	static jnt_info get_joint_info(mjModel* m, mjData* d)
 	{
 		/*for (int i = 0; i < m->njnt; ++i)
 		{
@@ -43,7 +45,9 @@ namespace utilities {
 		jnt_info data;
 
 		data.jnt_num = m->njnt;
-		data.names.resize(m->njnt);
+		data.act_num = m->nu;
+		data.jnt_names.resize(m->njnt);
+		data.act_names.resize(m->nu);
 		data.x.resize(m->njnt);
 		data.y.resize(m->njnt);
 		data.z.resize(m->njnt);
@@ -53,7 +57,12 @@ namespace utilities {
 			data.x[i] = d->xanchor[i * 3];
 			data.y[i] = d->xanchor[i * 3 + 1];
 			data.z[i] = d->xanchor[i * 3 + 2];
-			data.names[i] = mj_id2name(m, mjOBJ_JOINT, i);
+			data.jnt_names[i] = mj_id2name(m, mjOBJ_JOINT, i);
+		}
+
+		for (int i = 0; i < m->nu; i++)
+		{
+			data.act_names[i] = mj_id2name(m, mjOBJ_ACTUATOR, i);
 		}
 
 		return data;

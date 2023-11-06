@@ -4,3 +4,36 @@ WARNING: mju_openResource: unknown file 'C:/Users/mayur/Desktop/PhysicsBasedPose
 Sun Oct  8 19:52:10 2023
 WARNING: mju_openResource: unknown file 'C:/Users/mayur/Desktop/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid'
 
+Mon Oct 30 23:58:08 2023
+WARNING: mju_openResource: unknown file 'C:/Users/mayur/Desktop/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid/Ybot.xml'
+
+Tue Oct 31 00:09:37 2023
+ERROR: Maximum number of textures is 1000
+
+Tue Oct 31 01:21:57 2023
+ERROR: Shadow framebuffer is not complete, error 0x8cd6
+
+Tue Oct 31 02:03:14 2023
+ERROR: gladLoadGL error
+
+Tue Oct 31 15:22:01 2023
+ERROR: mjv_room2model: mjvScene scale too small
+
+Tue Oct 31 15:48:30 2023
+ERROR: gladLoadGL error
+
+Tue Oct 31 15:49:55 2023
+ERROR: gladLoadGL error
+
+Tue Oct 31 15:52:24 2023
+ERROR: gladLoadGL error
+
+Tue Oct 31 15:53:03 2023
+ERROR: gladLoadGL error
+
+Tue Oct 31 15:53:19 2023
+ERROR: gladLoadGL error
+
+Tue Oct 31 16:00:32 2023
+ERROR: gladLoadGL error
+

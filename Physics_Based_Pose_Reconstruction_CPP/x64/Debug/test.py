@@ -28,7 +28,7 @@ def print_info(sim):
         
 
 # Creating an instance of the class
-sim = pbpr.simulation("C:/Users/mayur/Desktop/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid/Ybot.xml")
+sim = pbpr.simulation("C:/Users/mayur/OneDrive/Documents/GitHub/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid/Ybot.xml")
 
 # Creating threads
 simulate_thread = threading.Thread(target=sim.simulate)

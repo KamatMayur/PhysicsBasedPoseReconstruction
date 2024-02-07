@@ -191,19 +191,19 @@ def get_qpos(amc_file):
   return qpos_values
 
 
-qpos_values = get_qpos('new_amc.amc' )
+# qpos_values = get_qpos('new_amc.amc' )
 
-import mujoco
-import mujoco.viewer
+# import mujoco
+# import mujoco.viewer
 
 
-model = mujoco.MjModel.from_xml_path('cmu_humanoid.xml')
-data = mujoco.MjData(model)
+# model = mujoco.MjModel.from_xml_path('cmu_humanoid.xml')
+# data = mujoco.MjData(model)
 
-with mujoco.viewer.launch_passive(model , data) as viewer:
-  while viewer.is_running():
-    for i in range(len(qpos_values)):
-      data.qpos = qpos_values[i]
-      time.sleep(1/120)
-      mujoco.mj_forward(model , data)
-      viewer.sync()
+# with mujoco.viewer.launch_passive(model , data) as viewer:
+#   while viewer.is_running():
+#     for i in range(len(qpos_values)):
+#       data.qpos = qpos_values[i]
+#       time.sleep(1/120)
+#       mujoco.mj_forward(model , data)
+#       viewer.sync()

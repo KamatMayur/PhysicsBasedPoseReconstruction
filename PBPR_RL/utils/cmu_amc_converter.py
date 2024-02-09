@@ -11,8 +11,8 @@ import numpy as np
 MOCAP_DT = 1.0/120.0
 CONVERSION_LENGTH = 0.056444
 
-# physics = mujoco.Physics.from_xml_path('cmu_humanoid.xml')
-  
+model = mujoco.MjModel.from_xml_path(r"C:\Users\mayur\Documents\GitHub\PhysicsBasedPoseReconstruction\PBPR_RL\environments\envs\assets\humanoid_CMU.xml")
+data = mujoco.MjData(model)
 
 _CMU_MOCAP_JOINT_ORDER = (
     'root0', 'root1', 'root2', 'root3', 'root4', 'root5', 'lowerbackrx',
@@ -190,8 +190,71 @@ def get_qpos(amc_file):
   
   return qpos_values
 
+def qvel_from_qpos(poses, timestep):
+    
+    """
+    generates the qvel array using the method of finite differences using the qpos values over the keyframes.
+    Currently only supports the humanoid_CMU.xml model.
 
-# qpos_values = get_qpos('new_amc.amc' )
+    args:
+        poses: (array of qpos of shape(number_of_frames, nq))
+        timestep: (timestep of the simulation or the frametime of the animation sequence)
+    returns:
+        an array of qvel of size(number_of_keyframes, nv)
+    """
+    # Extract number of frames and degrees of freedom (nv)
+    num_frames, nq = poses.shape
+    nv = 62  # Total number of degrees of freedom in your model, excluding the root joint
+
+    # Initialize array to store finite differences
+    diff_qvel = np.zeros((num_frames - 1, nv))
+    
+    # Compute finite differences for the root joint
+    root_qpos_diff = np.diff(poses[:, :7], axis=0)  # Assuming the root joint has 7 degrees of freedom
+    diff_qvel[:, :7] = root_qpos_diff / timestep
+    
+    # Iterate over the remaining joint dimensions separately
+    for i in range(7, nq):
+        # Compute differences between consecutive frames for the current joint dimension
+        qpos_diff = np.diff(poses[:, i])
+        
+        # Divide by timestep to obtain velocities for the current joint dimension
+        diff_qvel[:, i-1] = qpos_diff / timestep
+    
+    # If diff_qvel has one less frame, add a row of zeros to the end
+    if diff_qvel.shape[0] < num_frames:
+        diff_qvel = np.vstack((np.zeros((1, nv)), diff_qvel))
+    
+    return diff_qvel
+
+def xpos_from_qpos(poses):
+    xpos = []
+    for pose in poses:
+       data.qpos = pose
+       mujoco.mj_forward(model, data)
+       xpos.append(data.xpos.copy())
+    return np.array(xpos)
+
+def compute_com(xpos):
+	# Get the number of frames and number of bodies
+	num_frames, nbody, _ = xpos.shape
+
+	# Get body masses from the model
+	body_mass = np.array([model.body_mass[i] for i in range(1, nbody)])  # Exclude the ground plane
+	
+	# Initialize array to store COM at every frame
+	com_list = []
+	
+	# Iterate over frames
+	for i in range(num_frames):
+		# Compute COM for the current frame
+		com_frame = np.sum(xpos[i, 1:] * body_mass[:, np.newaxis], axis=0) / np.sum(body_mass)
+		com_list.append(com_frame)
+	
+	return np.array(com_list)
+
+# qpos_values = get_qpos(r'C:\Users\mayur\Documents\GitHub\PhysicsBasedPoseReconstruction\PBPR_RL\environments\envs\assets\cmu_mocap\walk_1.amc' )
+
 
 # import mujoco
 # import mujoco.viewer

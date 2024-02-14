@@ -5,6 +5,7 @@ import collections
 
 # from dm_control.mujoco import math as mjmath
 import numpy as np
+from utils.maths import quatprod, euler2quat
 # from scipy import interpolate
 # from dm_control import mujoco
 
@@ -28,12 +29,6 @@ _CMU_MOCAP_JOINT_ORDER = (
     'lfemurrx', 'lfemurry', 'lfemurrz', 'ltibiarx', 'lfootrx', 'lfootrz',
     'ltoesrx'
 )
-
-Converted = collections.namedtuple('Converted',
-                                   ['qpos', 'qvel', 'time'])
-
-
-
 
 def parse(file_name):
   """Parses the amc file format."""
@@ -71,55 +66,6 @@ def parse(file_name):
       if not line:
         break
   return values
-
-
-def quatprod(q1, q2):
-    """
-    Multiply two quaternions.
-    :param q1: Quaternion 1 as a NumPy array [w, x, y, z]
-    :param q2: Quaternion 2 as a NumPy array [w, x, y, z]
-    :return: Quaternion product as a NumPy array [w, x, y, z]
-    """
-    w1, x1, y1, z1 = q1
-    w2, x2, y2, z2 = q2
-
-    w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2
-    x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2
-    y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2
-    z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2
-
-    return np.array([w, x, y, z])
-
-def euler2quat(ax, ay, az):
-    """Converts euler angles to a quaternion.
-
-    Note: rotation order is zyx
-
-    Args:
-        ax: Roll angle (deg)
-        ay: Pitch angle (deg).
-        az: Yaw angle (deg).
-
-    Returns:
-        A numpy array representing the rotation as a quaternion.
-    """
-    r1 = az
-    r2 = ay
-    r3 = ax
-
-    c1 = np.cos(np.deg2rad(r1 / 2))
-    s1 = np.sin(np.deg2rad(r1 / 2))
-    c2 = np.cos(np.deg2rad(r2 / 2))
-    s2 = np.sin(np.deg2rad(r2 / 2))
-    c3 = np.cos(np.deg2rad(r3 / 2))
-    s3 = np.sin(np.deg2rad(r3 / 2))
-
-    q0 = c1 * c2 * c3 + s1 * s2 * s3
-    q1 = c1 * c2 * s3 - s1 * s2 * c3
-    q2 = c1 * s2 * c3 + s1 * c2 * s3
-    q3 = s1 * c2 * c3 - c1 * s2 * s3
-
-    return np.array([q0, q1, q2, q3])
 
 class Amcvals2qpos:
   """Callable that converts .amc values for a frame and to MuJoCo qpos format.
@@ -189,84 +135,3 @@ def get_qpos(amc_file):
   qpos_values = np.stack(qpos_values) 
   
   return qpos_values
-
-def qvel_from_qpos(poses, timestep):
-    
-    """
-    generates the qvel array using the method of finite differences using the qpos values over the keyframes.
-    Currently only supports the humanoid_CMU.xml model.
-
-    args:
-        poses: (array of qpos of shape(number_of_frames, nq))
-        timestep: (timestep of the simulation or the frametime of the animation sequence)
-    returns:
-        an array of qvel of size(number_of_keyframes, nv)
-    """
-    # Extract number of frames and degrees of freedom (nv)
-    num_frames, nq = poses.shape
-    nv = 62  # Total number of degrees of freedom in your model, excluding the root joint
-
-    # Initialize array to store finite differences
-    diff_qvel = np.zeros((num_frames - 1, nv))
-    
-    # Compute finite differences for the root joint
-    root_qpos_diff = np.diff(poses[:, :7], axis=0)  # Assuming the root joint has 7 degrees of freedom
-    diff_qvel[:, :7] = root_qpos_diff / timestep
-    
-    # Iterate over the remaining joint dimensions separately
-    for i in range(7, nq):
-        # Compute differences between consecutive frames for the current joint dimension
-        qpos_diff = np.diff(poses[:, i])
-        
-        # Divide by timestep to obtain velocities for the current joint dimension
-        diff_qvel[:, i-1] = qpos_diff / timestep
-    
-    # If diff_qvel has one less frame, add a row of zeros to the end
-    if diff_qvel.shape[0] < num_frames:
-        diff_qvel = np.vstack((np.zeros((1, nv)), diff_qvel))
-    
-    return diff_qvel
-
-def xpos_from_qpos(poses):
-    xpos = []
-    for pose in poses:
-       data.qpos = pose
-       mujoco.mj_forward(model, data)
-       xpos.append(data.xpos.copy())
-    return np.array(xpos)
-
-def compute_com(xpos):
-	# Get the number of frames and number of bodies
-	num_frames, nbody, _ = xpos.shape
-
-	# Get body masses from the model
-	body_mass = np.array([model.body_mass[i] for i in range(1, nbody)])  # Exclude the ground plane
-	
-	# Initialize array to store COM at every frame
-	com_list = []
-	
-	# Iterate over frames
-	for i in range(num_frames):
-		# Compute COM for the current frame
-		com_frame = np.sum(xpos[i, 1:] * body_mass[:, np.newaxis], axis=0) / np.sum(body_mass)
-		com_list.append(com_frame)
-	
-	return np.array(com_list)
-
-# qpos_values = get_qpos(r'C:\Users\mayur\Documents\GitHub\PhysicsBasedPoseReconstruction\PBPR_RL\environments\envs\assets\cmu_mocap\walk_1.amc' )
-
-
-# import mujoco
-# import mujoco.viewer
-
-
-# model = mujoco.MjModel.from_xml_path('cmu_humanoid.xml')
-# data = mujoco.MjData(model)
-
-# with mujoco.viewer.launch_passive(model , data) as viewer:
-#   while viewer.is_running():
-#     for i in range(len(qpos_values)):
-#       data.qpos = qpos_values[i]
-#       time.sleep(1/120)
-#       mujoco.mj_forward(model , data)
-#       viewer.sync()

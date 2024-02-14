@@ -14,12 +14,13 @@ def controller(sim, control_time=10.0, control_frequency=1/30):
     start_time = time.time()
     while time.time() - start_time < control_time:
         print('time elapsed = ', time.time() - start_time)
+        # arr = np.zeros(sim.info["act_num"])
         arr = np.random.uniform(-0.1, 0.1, sim.info["act_num"])
         sim.controls(arr)
         time.sleep(control_frequency) 
         
 
-sim = pbpr.simulation("C:/Users/mayur/OneDrive/Documents/GitHub/PhysicsBasedPoseReconstruction/Physics_Based_Pose_Reconstruction_CPP/Physics_Based_Pose_Reconstruction/Mujoco_Models/Humanoid/Ybot.xml")
+sim = pbpr.simulation(r"C:\Users\rakes\Desktop\PhysicsBasedPoseReconstruction\Physics_Based_Pose_Reconstruction_CPP\Physics_Based_Pose_Reconstruction\Mujoco_Models\Humanoid\Ybot.xml")
 
 
 # Creating threads

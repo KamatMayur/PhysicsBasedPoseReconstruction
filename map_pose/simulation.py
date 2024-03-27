@@ -42,8 +42,8 @@ def get_corrected_frame(frame):
     correct = {}
 
     for name , value in frame.items():
-        if name == 'pelv':
-            pass
+        if name in ['pelv', 'lhip', 'rhip']:
+            correct[name] = np.array(frame[name])
         else:
             # correct[name] =  np.array(frame[name]) - np.array(frame[parent[name]])
             correct[name] = np.array(frame[parent[name]]) - np.array(frame[name])
@@ -58,11 +58,11 @@ def get_corrected_frame(frame):
 
 
     corrected = {key_mapping.get(old_key, old_key): value for old_key, value in correct.items()}
-    del corrected['rsho']
-    del corrected['lsho']
+    # del corrected['rsho']
+    # del corrected['lsho']
 
-    del corrected['lhipjoint']
-    del corrected['rhipjoint']
+    # del corrected['lhipjoint']
+    # del corrected['rhipjoint']
 
     # del corrected['lclavicle']
     # del corrected['rclavicle']
@@ -74,9 +74,18 @@ def get_corrected_frame(frame):
 
     return corrected
 
-model = mujoco.MjModel.from_xml_path('cmu_humanoid.xml')
-data = mujoco.MjData(model)
-mujoco.mj_kinematics(model , data)
+def del_bones(frame):
+    del frame['rsho']
+    del frame['lsho']
+
+    del frame['lhipjoint']
+    del frame['rhipjoint']
+
+    del frame['root']
+
+    return frame
+
+
 
 heirarchy = {
     "pelv":["lhip","rhip","spi1"],
@@ -111,195 +120,44 @@ for p, children in heirarchy.items():
     for child in children:
         parent[child] = p
 
-# print([parent])
-# def get_initial_vectors():
-#     children_dict = {}
-#     for i in range(model.nbody):
-#         parent_id = model.body_parentid[i]  # Get the parent ID of the current body
-#         if parent_id not in children_dict:  # If parent ID not in dictionary, initialize an empty list
-#             children_dict[parent_id] = []
-#         children_dict[parent_id].append(i)
 
-#     initial_vector = {}
-#     for i in range(model.nbody):
-#         if i in [0,1,6 ,11,17,23,24,30,31 ]:
-#             pass
-#         elif i == 14:
-#             initial_vector[model.body(i).name] = model.body(15).pos
-#         else:
-#             initial_vector[model.body(i).name] = model.body(children_dict[i][0]).pos
+def get_root_pos_rot(pelv, lhip, rhip):
+        # calculate the root orientation with respect to the global frame
+        v1 = lhip - pelv
+        v2 = rhip - pelv
+        front = np.cross(v1, v2)
+        # Normalize the front vector
+        front /= np.linalg.norm(front)
+        # calculate the right vector
+        right = lhip-rhip
+        right /= np.linalg.norm(right)
+        #calculate the up vector
+        up = np.cross(front, right)
+        up /= np.linalg.norm(up)  
 
-#     return initial_vector
+        # Create rotation matrix
+        quat = np.array([7.07109449e-01, -2.33627864e-10,  1.50568659e-09, 7.07104113e-01])
+        rotation_matrix = np.column_stack((right, -up, -front))
+        r = Rotation.from_matrix(rotation_matrix)
 
-# def get_euler(T_pose, D_pose, axis = 'zxy'):
-#     # Normalize vectors
-#     T_pose = T_pose / np.linalg.norm(T_pose)
-#     D_pose = D_pose / np.linalg.norm(D_pose)
+        return pelv, r.as_quat()
 
-#     # Compute the rotation quaternion
-#     rot, _ = Rotation.align_vectors(D_pose, T_pose )
-#     euler_angles = rot.as_euler(axis)
-
-#     return euler_angles
-
-# initial_vector_lhumerus = np.array([0, -0.277 ,0])
-# initial_vector_lradius = np.array([0, -0.17, 0])
-
-# pose_vector_lhumerus = np.array([25.9475708 , 70.96630859, -258.64605713])
-# pose_vector_lradius = np.array([39.28666687,  -43.26953125, -249.75333786])
-
-# quat1 = data.body(19).xquat
-# # print('initntial', quat1, '------------', data.body(20).xquat)
-# conv_lhumerus = vector2local.convert_vector_2_local(vector=pose_vector_lhumerus, quat=quat1)
-
-# euler_angles1 = get_euler(T_pose= initial_vector_lhumerus, D_pose=pose_vector_lhumerus )
-# print(euler_angles1)
-# # data.qpos[41] = euler_angles1[0]
-# # data.qpos[41] = 1.57079633
-# # data.qpos[42] = euler_angles1[2]
-# # data.qpos[43] = 1.57079633
-# # data.qpos[43] = euler_angles1[1]
-
-# mujoco.mj_kinematics(model , data)
-# # print('finala', data.body(19).xquat, '---------------', data.body(20).xquat)
-# quat1 = data.body(20).xquat
-# conv_radis = vector2local.convert_vector_2_local(vector=pose_vector_lradius, quat=quat1)
-# euler_angles1 = get_euler(T_pose=initial_vector_lradius, D_pose=conv_radis, axis='xzy')
-# print(euler_angles1)
-# data.qpos[44] = euler_angles1[0]
-# mujoco.mj_kinematics(model, data)
-
-# initial_vector_lfemur = np.array([0 ,-0.404945 ,0])
-# pose_vector_lfemur = np.array([105.39110756,   -36.00244141,  -362.42189026])
-
-# quat1 = data.body(3).xquat
-
-# conv_lfemur = vector2local.convert_vector_2_local(vector=pose_vector_lfemur, quat=quat1)
-# euler_angles1 = get_euler(T_pose=initial_vector_lfemur, D_pose=conv_lfemur)
-
-
-# # euler_angles1 = r.as_euler('zxy')
-# # data.qpos[7] = euler_angles1[0]
-# # data.qpos[8] = euler_angles1[2]
-# # data.qpos[9] = euler_angles1[1]
-# # print(euler_angles1)
-
-# with open('poses.json', 'r') as file:
-#     poses = json.load(file)
-
-# def get_corrected_frame(frame):
-#     correct = {}
-
-#     for name , value in frame.items():
-#         if name == 'pelv':
-#             pass
-#         else:
-#             # correct[name] =  np.array(frame[name]) - np.array(frame[parent[name]])
-#             correct[name] = np.array(frame[parent[name]]) - np.array(frame[name])
-
-#     key_mapping = {'pelv':'root' , 'lhip':'lhipjoint' , 'rhip':'rhipjoint' , 'spi1':'lowerback', 
-#                 'lkne':'lfemur', 'rkne':'rfemur', 'spi2':'upperback',
-#                 'lank': 'ltibia', 'rank':'rtibia', 'spi3':'thorax', 
-#                 'ltoe':'lfoot' , 'rtoe':'rfoot', 'neck': 'lowerneck', 'head':'upperneck',
-#                 'rcla':'rclavicle' , 'lcla':'lclavicle', 'lelb':'lhumerus' , 'relb':'rhumerus',
-#                 'lwri':'lradius', 'rwri': 'rradius', 'lhan': 'lhand', 'rhan':'rhand'}
-                
-
-
-#     corrected = {key_mapping.get(old_key, old_key): value for old_key, value in correct.items()}
-#     del corrected['rsho']
-#     del corrected['lsho']
-
-#     del corrected['lhipjoint']
-#     del corrected['rhipjoint']
-
-#     # del corrected['lclavicle']
-#     # del corrected['rclavicle']
-
-#     # del corrected['lowerback']
-#     # del corrected['upperback']
-
-#     # del corrected['thorax']
-
-#     return corrected
-
-
-# T_lhumerus = normalize(np.array([0, -0.277 ,0]))
-# local_humerus = -normalize(vector2local.convert_vector_2_local(np.array([-221.90647888,   73.67578125,    0.64351273]), quat=data.body(19).xquat))
-
-# euler = get_euler(T_pose=T_lhumerus, D_pose=local_humerus)
-# data.qpos[41] = euler[0]
-# data.qpos[42] = euler[2]
-# data.qpos[43] = euler[1]
-
-# print('lhumerus', euler)
-# mujoco.mj_kinematics(model, data)
-
-# T_lradius = normalize(np.array([0 ,-0.17 ,0]))
-# local_lrad = -normalize(vector2local.convert_vector_2_local(np.array([155.03848267,   94.33154297, -178.33586121]), quat=data.body(20).xquat))
-
-# euler = get_euler(T_pose=T_lradius, D_pose=local_lrad)
-# data.qpos[44] = euler[1]
-# print('lradius', euler)
-# mujoco.mj_kinematics(model, data)
-
-# T_rhum = normalize(np.array([0 ,-0.277 ,0]))
-# T_rrad = normalize(np.array([0, -0.17 ,0]))
-
-# loca_rhum = -normalize(vector2local.convert_vector_2_local(np.array([160.70953369,  19.59619141, 211.26015472]), quat=data.body(26).xquat))
-# euler = get_euler(T_pose=T_rhum, D_pose=loca_rhum)
-# print('rhume', euler)
-# data.qpos[53] = euler[0]
-# data.qpos[54] = euler[2]
-# data.qpos[55] = euler[1]
-
-# mujoco.mj_kinematics(model, data)
-
-# loca_rrad = -normalize(vector2local.convert_vector_2_local(np.array([-102.5930481 ,  220.47021484,  -77.64592743]), quat=data.body(27).xquat))
-# euler = get_euler(T_pose=T_rrad, D_pose=loca_rrad)
-# data.qpos[56] = euler[1]
-
-
-# T_lfemur = normalize(np.array([0 ,-0.404945 ,0]))
-# T_ltibia = normalize(np.array([0 ,-0.405693 ,0]))
-
-# T_rfemur = normalize(np.array([0 ,-0.404945 ,0]))
-# T_rtibia = normalize(np.array([0 ,-0.405693 ,0]))
-
-
-# local_lfemur = -normalize(vector2local.convert_vector_2_local(np.array([-78.32650757,  54.5546875 , 344.78094482]), quat=data.body(3).xquat))
-# euler = get_euler(T_pose=T_lfemur, D_pose=local_lfemur)
-
-# data.qpos[7] = euler[0]
-# data.qpos[8] = euler[2]
-# data.qpos[9] = euler[1]
-# print('lfem', euler)
-# mujoco.mj_kinematics(model, data)
-
-
-
-# local_ltibia = -normalize(vector2local.convert_vector_2_local(np.array([-20.17140198, -232.6015625 ,  339.76525879]), quat=data.body(4).xquat))
-# euler = get_euler(T_pose=T_lfemur, D_pose=local_ltibia)
-
-# # data.qpos[7] = euler[0]
-# # data.qpos[8] = euler[2]
-# data.qpos[10] = euler[1]
-# print('ltibi', euler)
-# mujoco.mj_kinematics(model, data)
-
-
-# with mujoco.viewer.launch_passive(model , data) as viewer:
-#   while viewer.is_running():
-#     mujoco.mj_forward(model , data)
-#     viewer.sync()
 
 def simulation(frame):
+
+    mujoco.mj_resetData(model, data)
+    mujoco.mj_kinematics(model, data)
 
     new_frame = get_corrected_frame(frame=frame)
     initial_vector = get_initial_vectors()
 
-    mujoco.mj_resetData(model, data)
+    _, root_quat = get_root_pos_rot(np.array(new_frame["root"]),np.array(new_frame["lhipjoint"]), np.array(new_frame["rhipjoint"])) # Retruns the quat in x y z w format
+    data.qpos[3:7] = [root_quat[3], root_quat[0], root_quat[1], root_quat[2],]
     mujoco.mj_kinematics(model, data)
+
+
+    new_frame = del_bones(frame=new_frame)
+
 
     for name , position in new_frame.items():
         body_idx = mujoco.mj_name2id(model, 1, name)
@@ -344,15 +202,18 @@ def simulation(frame):
                 else:
                     data.qpos[j+6] = euler[1]
             else:
-                print('isjjios')
+                print('error')
             mujoco.mj_kinematics(model, data)
     return model, data
 
 
+model = mujoco.MjModel.from_xml_path('cmu_humanoid.xml')
+data = mujoco.MjData(model)
+mujoco.mj_kinematics(model , data)
 
 
 pose = read_pose('poses22.json')
-
+# pose = pose[0:20]
 with mujoco.viewer.launch_passive(model , data) as viewer:
     while viewer.is_running():
         for frame in pose:
